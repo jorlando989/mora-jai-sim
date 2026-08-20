@@ -2,42 +2,189 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    --main-color: #254963;
+    --box-color: #66472a;
+    --grey-color: #7b848b;
+    --white-color: #dedddf;
+    --black-color: #1e252b;
+    --red-color: #ad2c33;
+    --yellow-color: yellow;
+    --purple-color: #792587;
+    --green-color: #1b8d2b;
+    --pink-color: #be7dc7;
+    --orange-color: #d88b39;
+    --blue-color: #1f84ec;
 }
 
 body {
-    background-color: #254963;
+    background-color: var(--main-color);
+    color: white;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.settings {
 }
 
 .screen-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw;
+    min-height: 100vh;
+    gap: 10px;
 }
 
 .box {
-    background-color: #66472a;
+    display: flex;
+    background-color: var(--box-color);
     padding: 25px;
     border-radius: 10px;
-    width: 75%;
-    aspect-ratio: 1 / 1;
+    width: 50%;
+    max-width: 800px;
 }
 
 .tile {
     width: 30px;
     aspect-ratio: 1 / 1;
-    background-color: rgb(158, 156, 156);
+    background-color: var(--grey-color);
     border-radius: 10px;
     flex: 0 0 calc((100% - (10px * 4)) / 5)
 }
 
 .spacer {
-    background-color: #66472a;
+    background-color: var(--box-color);
 }
 
 .tiles {
     display: flex;
+    flex: 1;
+    aspect-ratio: 1 / 1;
     flex-wrap: wrap;
     gap: 10px;
+}
+
+/* Styling the backdrop layer when the modal is open */
+dialog::backdrop {
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    /* backdrop-filter: blur(4px); */
+}
+
+/* Basic styling for the modal box */
+dialog {
+    border: none;
+    border-radius: 8px;
+    padding: 24px;
+    margin: 10px;
+    /* max-width: 200px; */
+    width: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#tile-color-options {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+    gap: 10px;
+}
+
+#tile-color-options > button {
+    width: 50px;
+    aspect-ratio: 1 / 1;
+}
+
+.close-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* tile colors */
+.grey-tile {
+    background-color: var(--grey-color);
+}
+.white-tile {
+    background-color: var(--white-color);
+}
+.black-tile {
+    background-color: var(--black-color);
+    color: white;
+}
+.red-tile {
+    background-color: var(--red-color);
+    color: white;
+}
+.yellow-tile {
+    background-color: var(--yellow-color);
+}
+.purple-tile {
+    background-color: var(--purple-color);
+    color: white;
+}
+.green-tile {
+    background-color: var(--green-color);
+    color: white;
+}
+.pink-tile {
+    background-color: var(--pink-color);
+}
+.orange-tile {
+    background-color: var(--orange-color);
+}
+.blue-tile {
+    background-color: var(--blue-color);
+    color: white;
+}
+
+/* tile icons */
+.white-realm {
+    background-image: url('images/white_realm.png');
+    background-size: cover;
+}
+.black-realm {
+    background-image: url('images/black_realm.png');
+    background-size: cover;
+}
+.red-realm {
+    background-image: url('images/red_realm.png');
+    background-size: cover;
+}
+.yellow-realm {
+    background-image: url('images/yellow_realm.png');
+    background-size: cover;
+}
+.purple-realm {
+    background-image: url('images/purple_realm.png');
+    background-size: cover;
+}
+.green-realm {
+    background-image: url('images/green_realm.png');
+    background-size: cover;
+}
+.pink-realm {
+    background-image: url('images/pink_realm.png');
+    background-size: cover;
+}
+.orange-realm {
+    background-image: url('images/orange_realm.png');
+    background-size: cover;
+}
+.blue-realm {
+    background-image: url('images/blue_realm.png');
+    background-size: cover;
+}
+
+#top-left {
+    transform: rotate(-45deg);
+}
+#top-right {
+    transform: rotate(45deg);
+}
+#bottom-left {
+    transform: rotate(225deg);
+}
+#bottom-right {
+    transform: rotate(-225deg);
 }
