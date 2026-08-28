@@ -1,8 +1,14 @@
 // HELPER FUNCTIONS
 const WIDTH = 3, HEIGHT = 3;
 
-function getTileColor(tile) {
+export function getTileColor(tile) {
     const regex = /^(?!main-)\w+-tile$/;
+    const matchedClass = Array.from(tile.classList).find(className => regex.test(className));
+    return matchedClass.split("-")[0];
+}
+
+export function getCornerTileColor(tile) {
+	const regex = /^(?!main-)\w+-realm$/;
     const matchedClass = Array.from(tile.classList).find(className => regex.test(className));
     return matchedClass.split("-")[0];
 }

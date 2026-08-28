@@ -1,8 +1,39 @@
 import * as tileActions from "./tileActions.js";
 
 /* check if the corner matches the nearest tile */
-function checkForMatch(cornerTile, allTiles) {
+function checkForMatch(cornerTile, allTiles, startingSolve) {
+	const cornerColor = tileActions.getCornerTileColor(cornerTile);
 
+	var closestTileColor;
+	if (cornerTile.id == "top-left") {
+		closestTileColor = tileActions.getTileColor(allTiles[0]);
+	} else if (cornerTile.id == "top-right") {
+		closestTileColor = tileActions.getTileColor(allTiles[2]);
+	} else if (cornerTile.id == "bottom-left") {
+		closestTileColor = tileActions.getTileColor(allTiles[6]);
+	} else if (cornerTile.id == "bottom-right") {
+		closestTileColor = tileActions.getTileColor(allTiles[8]);
+	}
+	
+	if (cornerColor != closestTileColor) {
+		resetBox(startingSolve);
+	} else {
+		// mark corner solved
+		cornerTile.classList.add(`${cornerColor}-tile`);
+	}
+}
+
+function checkIfBoxSolved(cornerTiles) {
+	var numCorrect = 0;
+	cornerTiles.forEach(tile => {
+		if (tile.classList.length == 4) {
+			numCorrect++;
+		}
+	});
+
+	if (numCorrect == 4) {
+		console.log("Yay!");
+	}
 }
 
 /* do the corresponding action for the clicked tile */
@@ -28,22 +59,41 @@ function doTileAction(currTile, allTiles) {
 	}
 }
 
+function resetBox(startingSolve) {
+	const tileButtons = document.querySelectorAll(".main-tile");
+	const cornerButtons = document.querySelectorAll(".corner");
+
+	for (var i=0; i<startingSolve[0].length; i++) {
+		tileButtons[i].className = startingSolve[0][i].className;
+	}
+	for (var i=0; i<startingSolve[1].length; i++) {
+		cornerButtons[i].className = startingSolve[1][i].className;
+	}
+	console.log("resetting to starting solving state...");
+}
+
 // set starting values
 var mode = "Edit";
 var currButtonId = -1;
-
-const dropdown = document.querySelector("#modeSelector");
-dropdown.addEventListener("change", event => {
-	const selectedMode = event.target.value;
-	console.log(`${selectedMode} mode selected`);
-	mode = selectedMode;
-});
+var startingSolve = [];
 
 const tileSelectModal = document.querySelector("#tile-select-modal");
 const closeModalBtn = document.querySelector("#closeModalBtn");
 const modalColorButtons = document.querySelectorAll(".color-option");
 const tileButtons = document.querySelectorAll(".main-tile");
 const cornerButtons = document.querySelectorAll(".corner");
+
+const dropdown = document.querySelector("#modeSelector");
+dropdown.addEventListener("change", event => {
+	const selectedMode = event.target.value;
+	console.log(`${selectedMode} mode selected`);
+	mode = selectedMode;
+	if (mode == "Solve") {
+		const copiedTiles = Array.from(tileButtons, node => node.cloneNode(true));
+		const copiedCorners = Array.from(cornerButtons, node => node.cloneNode(true));
+		startingSolve = [copiedTiles, copiedCorners];
+	}
+});
 
 const resetButton = document.querySelector("#reset");
 resetButton.addEventListener("click", () => {
@@ -59,6 +109,7 @@ resetButton.addEventListener("click", () => {
 		});
 	} else {
 		// reset box to starting pattern for solving
+		resetBox(startingSolve);
 	}
 });
 
@@ -81,7 +132,8 @@ cornerButtons.forEach(button => {
 			currButtonId = button.id;
 			tileSelectModal.showModal();
 		} else {
-			checkForMatch(button, tileButtons);
+			checkForMatch(button, tileButtons, startingSolve);
+			checkIfBoxSolved(cornerButtons);
 		}
 	});
 });
@@ -100,7 +152,6 @@ modalColorButtons.forEach(button => {
 			if (currButton.classList.length > 2) {
 				currButton.className = ["tile", "corner"].join(" ");
 			}
-			currButton.classList.add(`${button.id}-tile`);
 			currButton.classList.add(`${button.id}-realm`);
 		} else {
 			//remove color class if exists
