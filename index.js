@@ -30,7 +30,6 @@ function doTileAction(currTile, allTiles) {
 
 // set starting values
 var mode = "Edit";
-// var buttons = new Array(9).fill(Colors.GREY);
 var currButtonId = -1;
 
 const dropdown = document.querySelector("#modeSelector");

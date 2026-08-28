@@ -1,10 +1,13 @@
+// HELPER FUNCTIONS
+const WIDTH = 3, HEIGHT = 3;
+
 function getTileColor(tile) {
     const regex = /^(?!main-)\w+-tile$/;
     const matchedClass = Array.from(tile.classList).find(className => regex.test(className));
     return matchedClass.split("-")[0];
 }
 
-function swapTwoTiles(currTile, swapTileInd, allTiles) {
+function swapTwoTiles(currTile, currTileInd, swapTileInd, allTiles) {
 	const currTileClass = currTile.className;
 	const swapTileClass = allTiles[swapTileInd].className;
 
@@ -13,19 +16,50 @@ function swapTwoTiles(currTile, swapTileInd, allTiles) {
 }
 
 function getOrthAdjTileInds(currTileInd) {
-    const width = 3, height = 3;
-    const currTileCoords = [Math.floor(currTileInd / height), currTileInd % width];
+    const currTileCoords = [Math.floor(currTileInd / HEIGHT), currTileInd % WIDTH];
     const adjTileInds = [];
 	if (currTileCoords[0] > 0)
-		adjTileInds.push((currTileCoords[0] - 1) * width + currTileCoords[1]);
-	if (currTileCoords[0] < height - 1)
-		adjTileInds.push((currTileCoords[0] + 1) * width + currTileCoords[1]);
+		adjTileInds.push((currTileCoords[0] - 1) * WIDTH + currTileCoords[1]);
+	if (currTileCoords[0] < HEIGHT - 1)
+		adjTileInds.push((currTileCoords[0] + 1) * WIDTH + currTileCoords[1]);
 	if (currTileCoords[1] > 0)
-		adjTileInds.push(currTileCoords[0] * width + (currTileCoords[1] - 1));
-	if (currTileCoords[1] < width - 1)
+		adjTileInds.push(currTileCoords[0] * WIDTH + (currTileCoords[1] - 1));
+	if (currTileCoords[1] < WIDTH - 1)
 		adjTileInds.push(currTileCoords[0] * 3 + (currTileCoords[1] + 1));
     return adjTileInds;
 }
+
+function getSurroundingTileInds(currTileInd) {
+	const currTileCoords = [Math.floor(currTileInd / HEIGHT), currTileInd % WIDTH];
+	const surroundingTileInds = [];
+	// i-1 j-1
+	if (currTileCoords[0] > 0 && currTileCoords[1] > 0)
+		surroundingTileInds.push((currTileCoords[0] - 1) * WIDTH + (currTileCoords[1] - 1));
+	// i-1 j
+	if (currTileCoords[0] > 0)
+		surroundingTileInds.push((currTileCoords[0] - 1) * WIDTH + currTileCoords[1]);
+	// i-1 j+1
+	if (currTileCoords[0] > 0 && currTileCoords[1] < WIDTH - 1) 
+		surroundingTileInds.push((currTileCoords[0] - 1) * WIDTH + (currTileCoords[1] + 1));
+	// i j+1
+	if (currTileCoords[1] < WIDTH - 1)
+		surroundingTileInds.push(currTileCoords[0] * WIDTH + (currTileCoords[1] + 1));
+	// i+1 j+1
+	if (currTileCoords[0] < HEIGHT - 1 && currTileCoords[1] < WIDTH - 1) 
+		surroundingTileInds.push((currTileCoords[0] + 1) * WIDTH + (currTileCoords[1] + 1));
+	// i+1 j
+	if (currTileCoords[0] < HEIGHT - 1)
+		surroundingTileInds.push((currTileCoords[0] + 1) * WIDTH + currTileCoords[1]);
+	// i+1 j-1
+	if (currTileCoords[0] < HEIGHT - 1 && currTileCoords[1] > 0) 
+		surroundingTileInds.push((currTileCoords[0] + 1) * WIDTH + (currTileCoords[1] - 1));
+	// i j-1
+	if (currTileCoords[1] > 0)
+		surroundingTileInds.push(currTileCoords[0] * WIDTH + (currTileCoords[1] - 1));
+	return surroundingTileInds;
+}
+
+// TILE ACTIONS
 
 // swap across box
 export function greenTileAction(currTile, allTiles) {
@@ -41,27 +75,30 @@ export function greenTileAction(currTile, allTiles) {
 	else if (currTileInd == 7) swapTileInd = 1;
 	else if (currTileInd == 8) swapTileInd = 0;
 
-	swapTwoTiles(currTile, swapTileInd, allTiles);
+	swapTwoTiles(currTile, currTileInd, swapTileInd, allTiles);
 	console.log("performed green tile action");
 }
 
 // swap adj tiles b/w white and grey (doesnt affect other colors)
-export function whiteTileAction(currTile, allTiles) {
+export function whiteTileAction(currTile, allTiles, blueFilter=false) {
 	const currTileInd = Number(currTile.id.split("-")[1]);
 	const adjTileInds = getOrthAdjTileInds(currTileInd);
 
+	var colorToUse = "white-tile";
+	if (blueFilter) colorToUse = "blue-tile"
+
 	adjTileInds.forEach(adjTileInd => {
 		if (adjTileInd < 0 || adjTileInd > 8) return;
-		if (allTiles[adjTileInd].classList.contains("white-tile")) {
-			allTiles[adjTileInd].classList.remove("white-tile");
+		if (allTiles[adjTileInd].classList.contains(colorToUse)) {
+			allTiles[adjTileInd].classList.remove(colorToUse);
 			allTiles[adjTileInd].classList.add("grey-tile");
 		} else if (allTiles[adjTileInd].classList.contains("grey-tile")) {
 			allTiles[adjTileInd].classList.remove("grey-tile");
-			allTiles[adjTileInd].classList.add("white-tile");
+			allTiles[adjTileInd].classList.add(colorToUse);
 		}
 	});
 
-	currTile.classList.remove("white-tile");
+	currTile.classList.remove(colorToUse);
 	currTile.classList.add("grey-tile");
 
 	console.log("performed white tile action");
@@ -114,6 +151,21 @@ export function blackTileAction(currTile, allTiles) {
 
 // rotate adj tiles clockwise
 export function pinkTileAction(currTile, allTiles) {
+	const currTileInd = currTile.id.split("-")[1];
+	const surroundingTileInds = getSurroundingTileInds(currTileInd);
+
+	console.log(surroundingTileInds);
+
+	var prevTileClass = allTiles[surroundingTileInds[0]].className;
+	var lastTileClass = allTiles[surroundingTileInds[surroundingTileInds.length-1]].className;
+	for (var i=1; i<surroundingTileInds.length; i++) {
+		//swap curr with next in list
+		const currTileClass = allTiles[surroundingTileInds[i]].className;
+		allTiles[surroundingTileInds[i]].className = prevTileClass;
+		prevTileClass = currTileClass;
+	}
+	allTiles[surroundingTileInds[0]].className = lastTileClass;
+
 	console.log("performed pink tile action");
 }
 
@@ -123,7 +175,7 @@ export function purpleTileAction(currTile, allTiles) {
 	if (currTileInd > 5) return;
 
 	const swapTileInd = currTileInd + 3;
-	swapTwoTiles(currTile, swapTileInd, allTiles);
+	swapTwoTiles(currTile, currTileInd, swapTileInd, allTiles);
 	console.log("performed purple tile action");
 }
 
@@ -133,7 +185,7 @@ export function yellowTileAction(currTile, allTiles) {
 	if (currTileInd < 3) return;
 
 	const swapTileInd = currTileInd - 3;
-	swapTwoTiles(currTile, swapTileInd, allTiles);
+	swapTwoTiles(currTile, currTileInd, swapTileInd, allTiles);
 	console.log("performed yellow tile action");
 }
 
@@ -145,6 +197,7 @@ export function orangeTileAction(currTile, allTiles) {
     const adjColors = new Map();
     adjTileInds.forEach(adjTileInd => {
         const adjColor = getTileColor(allTiles[adjTileInd]);
+		if (adjColor == "grey") return;
         if (adjColors.has(getTileColor(allTiles[adjTileInd]))) {
             adjColors.set(adjColor, adjColors.get(adjColor) + 1);
         } else {
@@ -152,14 +205,53 @@ export function orangeTileAction(currTile, allTiles) {
         }
     });
 
-    //choose majority color
+    //choose majority color - if not just 1 do nothing
+	const majorityColorOccurences = Math.max(...adjColors.values());
+	const allMajorityColors = [...adjColors.entries()].filter(([_, value]) => value === majorityColorOccurences);
+	if (allMajorityColors.length > 1 || allMajorityColors.length == 0) return;
 
     //set curr tile to majority color
+	allTiles[currTileInd].classList.remove(`orange-tile`);
+	allTiles[currTileInd].classList.add(`${allMajorityColors[0][0]}-tile`);
 
 	console.log("performed orange tile action");
 }
 
 // mimic center tile
 export function blueTileAction(currTile, allTiles) {
+	const currTileInd = Number(currTile.id.split("-")[1]);
+	if (currTileInd == 4) return;
+
+	const middleTileColor = getTileColor(allTiles[4]);
+	switch (middleTileColor) {
+		case "pink":
+			pinkTileAction(currTile, allTiles);
+			break;
+		case "purple":
+			purpleTileAction(currTile, allTiles);
+			break;
+		case "red":
+			redTileAction(currTile, allTiles);
+			break;
+		case "orange":
+			orangeTileAction(currTile, allTiles);
+			break;
+		case "black":
+			blackTileAction(currTile, allTiles);
+			break;
+		case "green":
+			greenTileAction(currTile, allTiles);
+			break;
+		case "yellow":
+			yellowTileAction(currTile, allTiles);
+			break;
+		case "white":
+			//make grey -> blue instead of white
+			whiteTileAction(currTile, allTiles, true);
+			break;
+		default:
+			return;
+	}
+
 	console.log("performed blue tile action");
 }
