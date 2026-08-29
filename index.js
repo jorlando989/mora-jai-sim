@@ -33,7 +33,8 @@ function checkIfBoxSolved(cornerTiles) {
 	});
 
 	if (numCorrect == 4) {
-		console.log("Yay!");
+		const solvedModal = document.querySelector("#solved-modal");
+		solvedModal.showModal();
 	}
 }
 
@@ -78,15 +79,17 @@ function renderBox(boxConfig) {
 	const cornerButtons = document.querySelectorAll(".corner");
 
 	console.log(boxConfig);
-	
+
 	const tileColors = boxConfig[0];
 	const cornerColors = boxConfig[1];
 	for (var i=0; i<tileColors.length; i++) {
+		tileButtons[i].classList.remove("grey-tile");
 		tileButtons[i].classList.add(`${tileColors[i]}-tile`);
 	};
 
 	for (var i=0; i<cornerColors.length; i++) {
-		cornerButtons[i].classList.add(`${tileColors[i]}-realm`);
+		cornerButtons[i].classList.remove("grey-realm");
+		cornerButtons[i].classList.add(`${cornerColors[i]}-realm`);
 	};
 }
 
@@ -121,7 +124,7 @@ resetButton.addEventListener("click", () => {
 		currButtonId = -1;
 		//re-render box
 		cornerButtons.forEach(button => {
-			button.className = ["tile", "corner"].join(" ");
+			button.className = ["tile", "corner", "grey-realm"].join(" ");
 		});
 		tileButtons.forEach(button => {
 			button.className = ["tile", "main-tile", "grey-tile"].join(" ");
@@ -135,7 +138,18 @@ resetButton.addEventListener("click", () => {
 generateButton.addEventListener("click", () => {
 	console.log("generating new box...");
 	const newBoxConfiguration = generateBox();
+	currButtonId = -1;
+	//re-render box
+	cornerButtons.forEach(button => {
+		button.className = ["tile", "corner", "grey-realm"].join(" ");
+	});
+	tileButtons.forEach(button => {
+		button.className = ["tile", "main-tile", "grey-tile"].join(" ");
+	});
 	renderBox(newBoxConfiguration);
+	const copiedTiles = Array.from(tileButtons, node => node.cloneNode(true));
+	const copiedCorners = Array.from(cornerButtons, node => node.cloneNode(true));
+	startingSolve = [copiedTiles, copiedCorners];
 });
 
 tileButtons.forEach(button => {
