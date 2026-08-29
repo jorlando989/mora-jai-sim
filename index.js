@@ -94,7 +94,7 @@ function renderBox(boxConfig) {
 }
 
 // set starting values
-var mode = "Edit";
+var mode = "Daily";
 var currButtonId = -1;
 var startingSolve = [];
 
@@ -154,7 +154,6 @@ generateButton.addEventListener("click", () => {
 
 tileButtons.forEach(button => {
 	button.addEventListener("click", () => {
-		console.log(`button ${button.id} clicked`);
 		if (mode == "Edit") {
 			currButtonId = button.id;
 			tileSelectModal.showModal();
@@ -166,7 +165,6 @@ tileButtons.forEach(button => {
 
 cornerButtons.forEach(button => {
 	button.addEventListener("click", () => {
-		console.log(`corner button ${button.id} clicked`);
 		if (mode == "Edit") {
 			currButtonId = button.id;
 			tileSelectModal.showModal();
@@ -184,7 +182,6 @@ closeModalBtn.addEventListener("click", () => {
 
 modalColorButtons.forEach(button => {
 	button.addEventListener("click", () => {
-		console.log(`${button.id} color selected`);
 		const currButton = document.querySelector(`.tile#${currButtonId}`);
 		if (currButton.classList.contains("corner")) {
 			//remove color class if exists
