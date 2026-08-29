@@ -1,4 +1,5 @@
 import * as tileActions from "./tileActions.js";
+import { generateBox } from "./generateBox.js";
 
 /* check if the corner matches the nearest tile */
 function checkForMatch(cornerTile, allTiles, startingSolve) {
@@ -72,6 +73,23 @@ function resetBox(startingSolve) {
 	console.log("resetting to starting solving state...");
 }
 
+function renderBox(boxConfig) {
+	const tileButtons = document.querySelectorAll(".main-tile");
+	const cornerButtons = document.querySelectorAll(".corner");
+
+	console.log(boxConfig);
+	
+	const tileColors = boxConfig[0];
+	const cornerColors = boxConfig[1];
+	for (var i=0; i<tileColors.length; i++) {
+		tileButtons[i].classList.add(`${tileColors[i]}-tile`);
+	};
+
+	for (var i=0; i<cornerColors.length; i++) {
+		cornerButtons[i].classList.add(`${tileColors[i]}-realm`);
+	};
+}
+
 // set starting values
 var mode = "Edit";
 var currButtonId = -1;
@@ -82,6 +100,7 @@ const closeModalBtn = document.querySelector("#closeModalBtn");
 const modalColorButtons = document.querySelectorAll(".color-option");
 const tileButtons = document.querySelectorAll(".main-tile");
 const cornerButtons = document.querySelectorAll(".corner");
+const generateButton = document.querySelector("#generate");
 
 const dropdown = document.querySelector("#modeSelector");
 dropdown.addEventListener("change", event => {
@@ -113,8 +132,14 @@ resetButton.addEventListener("click", () => {
 	}
 });
 
+generateButton.addEventListener("click", () => {
+	console.log("generating new box...");
+	const newBoxConfiguration = generateBox();
+	renderBox(newBoxConfiguration);
+});
+
 tileButtons.forEach(button => {
-	button.addEventListener("click", event => {
+	button.addEventListener("click", () => {
 		console.log(`button ${button.id} clicked`);
 		if (mode == "Edit") {
 			currButtonId = button.id;
@@ -126,7 +151,7 @@ tileButtons.forEach(button => {
 });
 
 cornerButtons.forEach(button => {
-	button.addEventListener("click", event => {
+	button.addEventListener("click", () => {
 		console.log(`corner button ${button.id} clicked`);
 		if (mode == "Edit") {
 			currButtonId = button.id;
@@ -144,7 +169,7 @@ closeModalBtn.addEventListener("click", () => {
 });
 
 modalColorButtons.forEach(button => {
-	button.addEventListener("click", event => {
+	button.addEventListener("click", () => {
 		console.log(`${button.id} color selected`);
 		const currButton = document.querySelector(`.tile#${currButtonId}`);
 		if (currButton.classList.contains("corner")) {

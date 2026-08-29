@@ -39,12 +39,9 @@ body {
     background-color: var(--box-color);
     padding: 25px;
     border-radius: 10px;
-    width: 50%;
-    max-width: 800px;
 }
 
 .tile {
-    width: 30px;
     aspect-ratio: 1 / 1;
     background-color: var(--grey-color);
     border-radius: 10px;
@@ -75,7 +72,6 @@ dialog {
     border-radius: 8px;
     padding: 24px;
     margin: 10px;
-    /* max-width: 200px; */
     width: 50%;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
