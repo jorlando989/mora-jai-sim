@@ -14,3 +14,5 @@ All puzzles generated should have a valid solution
 ### Disclaimer
 This is still a work in progress so please report any issues [here](https://github.com/jorlando989/mora-jai-sim/issues)
 
+
+Cat icons created by Dave Gandy - Flaticon https://www.flaticon.com/free-icons/cat

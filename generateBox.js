@@ -29,7 +29,7 @@ export function generateBox() {
     return [hashToColors(boxHash), hashToColors(cornerHash)];
 }
 
-function hashToColors(hash) {
+export function hashToColors(hash) {
     var boxColors = [];
     hash.split("").forEach((x) => {
         boxColors.push(colors[Number(x)]);

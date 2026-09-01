@@ -22,7 +22,21 @@ body {
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.settings {
+.settings > button {
+    padding: 3px;
+    font-size: 14px;
+}
+
+.moves-made {
+    font-size: 24px;
+}
+
+#github-logo {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 50px;
+    height: 50px;
 }
 
 .screen-container {

@@ -7,14 +7,17 @@
 	<body>
 		<div class="screen-container">
 			<div class="settings">
-				<label for="modeSelector">Mode: </label>
-				<select name="modeSelector" id="modeSelector" autocomplete="off">
+				<!-- <label for="modeSelector">Mode: </label> -->
+				<!-- <select name="modeSelector" id="modeSelector" autocomplete="off">
 					<option value="Edit">Edit mode</option>
 					<option value="Solve">Solve mode</option>
 					<option value="Daily" selected>Daily mode</option>
-				</select>
-                <button id="reset">Reset</button>
-				<button id="generate">Generate Box</button>
+				</select> -->
+                <button id="reset">Reset to Starting State</button>
+				<!-- <button id="generate">Generate Box</button> -->
+			</div>
+			<div class="moves-made">
+				Moves Made: <span id="moves-made">0</span>
 			</div>
 			<div class="box">
 				<div class="tiles">
@@ -49,6 +52,7 @@
 					<button class="tile corner grey-realm" id="bottom-right"></button>
 				</div>
 			</div>
+			<a href="https://github.com/jorlando989/mora-jai-sim"><img id="github-logo" src="images/github-logo.png" alt="github logo"></a>
 		</div>
 		<dialog id="tile-select-modal">
 			<h2>Select tile color</h2>
@@ -68,6 +72,11 @@
 		</dialog>
 		<dialog id="solved-modal">
 			<h2>Congratulations!</h2>
+			<p>You solved the box in <span id="final-moves">0</span> moves!</p>
+
+			<div>
+				The average moves for solving this box is <span id="average-moves">0</span> moves.
+			</div>
 		</dialog>
 	</body>
 </html>

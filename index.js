@@ -1,5 +1,5 @@
 import * as tileActions from "./tileActions.js";
-import { generateBox } from "./generateBox.js";
+import { generateBox, hashToColors } from "./generateBox.js";
 
 /* check if the corner matches the nearest tile */
 function checkForMatch(cornerTile, allTiles, startingSolve) {
@@ -24,7 +24,7 @@ function checkForMatch(cornerTile, allTiles, startingSolve) {
 	}
 }
 
-function checkIfBoxSolved(cornerTiles) {
+async function checkIfBoxSolved(cornerTiles, movesMade) {
 	var numCorrect = 0;
 	cornerTiles.forEach(tile => {
 		if (tile.classList.length == 4) {
@@ -34,7 +34,31 @@ function checkIfBoxSolved(cornerTiles) {
 
 	if (numCorrect == 4) {
 		const solvedModal = document.querySelector("#solved-modal");
+		const finalMovesSpan = document.querySelector("#final-moves");
+		finalMovesSpan.textContent = movesMade;
 		solvedModal.showModal();
+
+		//get avg moves from today
+		const dailyStatsResponse = await fetch("http://127.0.0.1:8000/getDailyStats");
+		const dailyStatsData = await dailyStatsResponse.json();
+		const averageMovesSpan = document.querySelector("#average-moves");
+		averageMovesSpan.textContent = dailyStatsData.avgMoves;
+
+		// send stats to backend
+		const stats = {
+			movesMade: movesMade,
+			timestamp: new Date().toISOString()
+		};
+		const response = await fetch("http://127.0.0.1:8000/addDailyStats", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(stats)
+		});
+		if (!response.ok) {
+			console.error("Failed to send stats to backend");
+		}
 	}
 }
 
@@ -93,29 +117,48 @@ function renderBox(boxConfig) {
 	};
 }
 
+
 // set starting values
 var mode = "Daily";
 var currButtonId = -1;
 var startingSolve = [];
+var movesMade = 0;
 
 const tileSelectModal = document.querySelector("#tile-select-modal");
 const closeModalBtn = document.querySelector("#closeModalBtn");
 const modalColorButtons = document.querySelectorAll(".color-option");
 const tileButtons = document.querySelectorAll(".main-tile");
 const cornerButtons = document.querySelectorAll(".corner");
-const generateButton = document.querySelector("#generate");
+// const generateButton = document.querySelector("#generate");
 
-const dropdown = document.querySelector("#modeSelector");
-dropdown.addEventListener("change", event => {
-	const selectedMode = event.target.value;
-	console.log(`${selectedMode} mode selected`);
-	mode = selectedMode;
-	if (mode == "Solve") {
-		const copiedTiles = Array.from(tileButtons, node => node.cloneNode(true));
-		const copiedCorners = Array.from(cornerButtons, node => node.cloneNode(true));
-		startingSolve = [copiedTiles, copiedCorners];
-	}
+window.addEventListener('load', async () => {
+	const response = await fetch("http://127.0.0.1:8000/dailyPuzzle")
+	const dailyPuzzleInfo = await response.json();
+	console.log(dailyPuzzleInfo)
+	
+	//set as starting solve and set corners and box to this starting position
+	const dailyTileColors = hashToColors(dailyPuzzleInfo.dailyPuzzleHash);
+	const dailyCornerColors = hashToColors(dailyPuzzleInfo.dailyCornerHash);
+	renderBox([dailyTileColors, dailyCornerColors]);
+
+	const copiedTiles = Array.from(tileButtons, node => node.cloneNode(true));
+	const copiedCorners = Array.from(cornerButtons, node => node.cloneNode(true));
+	startingSolve = [copiedTiles, copiedCorners];
+
+	console.log("Daily Puzzle loaded")
 });
+
+// const dropdown = document.querySelector("#modeSelector");
+// dropdown.addEventListener("change", event => {
+// 	const selectedMode = event.target.value;
+// 	console.log(`${selectedMode} mode selected`);
+// 	mode = selectedMode;
+// 	if (mode == "Solve") {
+// 		const copiedTiles = Array.from(tileButtons, node => node.cloneNode(true));
+// 		const copiedCorners = Array.from(cornerButtons, node => node.cloneNode(true));
+// 		startingSolve = [copiedTiles, copiedCorners];
+// 	}
+// });
 
 const resetButton = document.querySelector("#reset");
 resetButton.addEventListener("click", () => {
@@ -132,25 +175,28 @@ resetButton.addEventListener("click", () => {
 	} else {
 		// reset box to starting pattern for solving
 		resetBox(startingSolve);
+		movesMade = 0;
+		const movesMadeSpan = document.querySelector("#moves-made");
+		movesMadeSpan.textContent = movesMade;
 	}
 });
 
-generateButton.addEventListener("click", () => {
-	console.log("generating new box...");
-	const newBoxConfiguration = generateBox();
-	currButtonId = -1;
-	//re-render box
-	cornerButtons.forEach(button => {
-		button.className = ["tile", "corner", "grey-realm"].join(" ");
-	});
-	tileButtons.forEach(button => {
-		button.className = ["tile", "main-tile", "grey-tile"].join(" ");
-	});
-	renderBox(newBoxConfiguration);
-	const copiedTiles = Array.from(tileButtons, node => node.cloneNode(true));
-	const copiedCorners = Array.from(cornerButtons, node => node.cloneNode(true));
-	startingSolve = [copiedTiles, copiedCorners];
-});
+// generateButton.addEventListener("click", () => {
+// 	console.log("generating new box...");
+// 	const newBoxConfiguration = generateBox();
+// 	currButtonId = -1;
+// 	//re-render box
+// 	cornerButtons.forEach(button => {
+// 		button.className = ["tile", "corner", "grey-realm"].join(" ");
+// 	});
+// 	tileButtons.forEach(button => {
+// 		button.className = ["tile", "main-tile", "grey-tile"].join(" ");
+// 	});
+// 	renderBox(newBoxConfiguration);
+// 	const copiedTiles = Array.from(tileButtons, node => node.cloneNode(true));
+// 	const copiedCorners = Array.from(cornerButtons, node => node.cloneNode(true));
+// 	startingSolve = [copiedTiles, copiedCorners];
+// });
 
 tileButtons.forEach(button => {
 	button.addEventListener("click", () => {
@@ -159,6 +205,9 @@ tileButtons.forEach(button => {
 			tileSelectModal.showModal();
 		} else {
 			doTileAction(button, tileButtons);
+			movesMade++;
+			const movesMadeSpan = document.querySelector("#moves-made");
+			movesMadeSpan.textContent = movesMade;
 		}
 	});
 });
@@ -170,7 +219,7 @@ cornerButtons.forEach(button => {
 			tileSelectModal.showModal();
 		} else {
 			checkForMatch(button, tileButtons, startingSolve);
-			checkIfBoxSolved(cornerButtons);
+			checkIfBoxSolved(cornerButtons, movesMade);
 		}
 	});
 });
