@@ -1,5 +1,6 @@
 import * as tileActions from "./tileActions.js";
-import { generateBox, hashToColors } from "./generateBox.js";
+import { hashToColors } from "./generateBox.js";
+import { API_ENDPOINT } from "./config.js";
 
 /* check if the corner matches the nearest tile */
 function checkForMatch(cornerTile, allTiles, startingSolve) {
@@ -39,7 +40,7 @@ async function checkIfBoxSolved(cornerTiles, movesMade) {
 		solvedModal.showModal();
 
 		//get avg moves from today
-		const dailyStatsResponse = await fetch("http://127.0.0.1:8000/getDailyStats");
+		const dailyStatsResponse = await fetch(`${API_ENDPOINT}/getDailyStats`);
 		const dailyStatsData = await dailyStatsResponse.json();
 		const averageMovesSpan = document.querySelector("#average-moves");
 		averageMovesSpan.textContent = dailyStatsData.avgMoves;
@@ -49,7 +50,7 @@ async function checkIfBoxSolved(cornerTiles, movesMade) {
 			movesMade: movesMade,
 			timestamp: new Date().toISOString()
 		};
-		const response = await fetch("http://127.0.0.1:8000/addDailyStats", {
+		const response = await fetch(`${API_ENDPOINT}/addDailyStats`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
@@ -143,9 +144,9 @@ closeSolvedModalBtn.addEventListener("click", () => {
 });
 
 statsButton.addEventListener("click", async () => {
-	const response = await fetch("http://127.0.0.1:8000/getStatsHistory")
+	const response = await fetch(`${API_ENDPOINT}/getStatsHistory`)
 	const statsHistoryData = await response.json();
-
+	
 	const statsModal = document.querySelector("#stats-modal");
 	const statsContentDiv = document.querySelector("#stats-content");
 	statsContentDiv.innerHTML = ""; // Clear previous content
@@ -185,9 +186,9 @@ statsButton.addEventListener("click", async () => {
 });
 
 window.addEventListener('load', async () => {
-	const response = await fetch("http://127.0.0.1:8000/dailyPuzzle")
+	const response = await fetch(`${API_ENDPOINT}/dailyPuzzle`)
 	const dailyPuzzleInfo = await response.json();
-	
+
 	//set as starting solve and set corners and box to this starting position
 	const dailyTileColors = hashToColors(dailyPuzzleInfo.dailyPuzzleHash);
 	const dailyCornerColors = hashToColors(dailyPuzzleInfo.dailyCornerHash);
