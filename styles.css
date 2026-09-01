@@ -74,10 +74,19 @@ body {
     gap: 10px;
 }
 
-/* Styling the backdrop layer when the modal is open */
-dialog::backdrop {
-    /* background-color: rgba(0, 0, 0, 0.5); */
-    /* backdrop-filter: blur(4px); */
+.development-notice {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--yellow-color);
+    color: black;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    width: 80%;
+    z-index: 1000; /* Ensure it appears above other elements */
 }
 
 /* Basic styling for the modal box */

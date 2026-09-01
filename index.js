@@ -102,8 +102,6 @@ function renderBox(boxConfig) {
 	const tileButtons = document.querySelectorAll(".main-tile");
 	const cornerButtons = document.querySelectorAll(".corner");
 
-	console.log(boxConfig);
-
 	const tileColors = boxConfig[0];
 	const cornerColors = boxConfig[1];
 	for (var i=0; i<tileColors.length; i++) {
@@ -147,7 +145,6 @@ closeSolvedModalBtn.addEventListener("click", () => {
 statsButton.addEventListener("click", async () => {
 	const response = await fetch("http://127.0.0.1:8000/getStatsHistory")
 	const statsHistoryData = await response.json();
-	console.log("history:",statsHistoryData)
 
 	const statsModal = document.querySelector("#stats-modal");
 	const statsContentDiv = document.querySelector("#stats-content");
@@ -190,7 +187,6 @@ statsButton.addEventListener("click", async () => {
 window.addEventListener('load', async () => {
 	const response = await fetch("http://127.0.0.1:8000/dailyPuzzle")
 	const dailyPuzzleInfo = await response.json();
-	console.log(dailyPuzzleInfo)
 	
 	//set as starting solve and set corners and box to this starting position
 	const dailyTileColors = hashToColors(dailyPuzzleInfo.dailyPuzzleHash);
