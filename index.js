@@ -130,6 +130,62 @@ const modalColorButtons = document.querySelectorAll(".color-option");
 const tileButtons = document.querySelectorAll(".main-tile");
 const cornerButtons = document.querySelectorAll(".corner");
 // const generateButton = document.querySelector("#generate");
+const statsButton = document.querySelector("#view-stats");
+const closeStatsModalBtn = document.querySelector("#closeStatsModalBtn");
+const closeSolvedModalBtn = document.querySelector("#closeSolvedModalBtn");
+
+closeStatsModalBtn.addEventListener("click", () => {
+	const statsModal = document.querySelector("#stats-modal");
+	statsModal.close();
+});
+
+closeSolvedModalBtn.addEventListener("click", () => {
+	const solvedModal = document.querySelector("#solved-modal");
+	solvedModal.close();
+});
+
+statsButton.addEventListener("click", async () => {
+	const response = await fetch("http://127.0.0.1:8000/getStatsHistory")
+	const statsHistoryData = await response.json();
+	console.log("history:",statsHistoryData)
+
+	const statsModal = document.querySelector("#stats-modal");
+	const statsContentDiv = document.querySelector("#stats-content");
+	statsContentDiv.innerHTML = ""; // Clear previous content
+
+	// Create table
+	const table = document.createElement("table");
+	table.classList.add("stats-table");
+
+	// Create header row
+	const headerRow = document.createElement("tr");
+	const headers = ["Date", "Average Moves", "Number of Solvers"];
+	headers.forEach(headerText => {
+		const th = document.createElement("th");
+		th.textContent = headerText;
+		headerRow.appendChild(th);
+	});
+	table.appendChild(headerRow);
+
+	// Create data rows
+	statsHistoryData.forEach(entry => {
+		const row = document.createElement("tr");
+		const dateCell = document.createElement("td");
+		dateCell.textContent = entry.date;
+		const avgMovesCell = document.createElement("td");
+		avgMovesCell.textContent = entry.avgMoves;
+		const numSolversCell = document.createElement("td");
+		numSolversCell.textContent = entry.numSolvers;
+
+		row.appendChild(dateCell);
+		row.appendChild(avgMovesCell);
+		row.appendChild(numSolversCell);
+		table.appendChild(row);
+	});
+
+	statsContentDiv.appendChild(table);
+	statsModal.showModal();
+});
 
 window.addEventListener('load', async () => {
 	const response = await fetch("http://127.0.0.1:8000/dailyPuzzle")

@@ -111,6 +111,16 @@ dialog {
     cursor: pointer;
 }
 
+.close-modal-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
 /* tile colors */
 .grey-tile {
     background-color: var(--grey-color);
@@ -197,4 +207,47 @@ dialog {
 }
 #bottom-right {
     transform: rotate(-225deg);
+}
+
+/* Stats table styling */
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.stats-table th {
+    background-color: #254963;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #66472a;
+}
+
+.stats-table td {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+    color: #dedddf;
+}
+
+.stats-table tr:hover {
+    background-color: #252525;
+    transition: background-color 0.2s ease;
+}
+
+.stats-table tr:last-child td {
+    border-bottom: none;
+}
+
+.stats-entry {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+    border: 5px solid var(--black-color);
+    background-color: var(--blue-color);
 }

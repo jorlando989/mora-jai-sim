@@ -14,6 +14,7 @@
 					<option value="Daily" selected>Daily mode</option>
 				</select> -->
                 <button id="reset">Reset to Starting State</button>
+				<button id="view-stats">View Stats</button>
 				<!-- <button id="generate">Generate Box</button> -->
 			</div>
 			<div class="moves-made">
@@ -71,11 +72,20 @@
 			<button id="closeModalBtn" class="close-btn">Close</button>
 		</dialog>
 		<dialog id="solved-modal">
+			<button class="close-modal-button" id="closeSolvedModalBtn">Close</button>
 			<h2>Congratulations!</h2>
 			<p>You solved the box in <span id="final-moves">0</span> moves!</p>
 
 			<div>
 				The average moves for solving this box is <span id="average-moves">0</span> moves.
+			</div>
+		</dialog>
+		<dialog id="stats-modal">
+			<button class="close-modal-button" id="closeStatsModalBtn">Close</button>
+			<h2>Previous Box Statistics</h2>
+			<div id="stats-content">
+				<div><strong>Date:</strong> <strong>Average Moves Made:</strong> <strong>Number of Solvers:</strong></div>
+				<!-- Stats content will be populated here -->
 			</div>
 		</dialog>
 	</body>
