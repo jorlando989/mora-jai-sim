@@ -1,6 +1,15 @@
 import * as tileActions from "./tileActions.js";
-import { hashToColors } from "./generateBox.js";
 import { API_ENDPOINT } from "./config.js";
+
+const colors = ["red", "green", "blue", "white", "black", "orange", "yellow", "pink", "purple", "grey"];
+
+function hashToColors(hash) {
+	var boxColors = [];
+	hash.split("").forEach((x) => {
+		boxColors.push(colors[Number(x)]);
+	});
+	return boxColors;
+}
 
 /* check if the corner matches the nearest tile */
 function checkForMatch(cornerTile, allTiles, startingSolve) {
@@ -41,12 +50,6 @@ async function checkIfBoxSolved(cornerTiles, movesMade) {
 		finalMovesSpan.textContent = movesMade;
 		solvedModal.showModal();
 
-		//get avg moves from today
-		const dailyStatsResponse = await fetch(`${API_ENDPOINT}/getDailyStats`);
-		const dailyStatsData = await dailyStatsResponse.json();
-		const averageMovesSpan = document.querySelector("#average-moves");
-		averageMovesSpan.textContent = dailyStatsData.avgMoves;
-
 		// send stats to backend
 		const stats = {
 			movesMade: movesMade,
@@ -62,6 +65,12 @@ async function checkIfBoxSolved(cornerTiles, movesMade) {
 		if (!response.ok) {
 			console.error("Failed to send stats to backend");
 		}
+
+		//get avg moves from today
+		const dailyStatsResponse = await fetch(`${API_ENDPOINT}/getDailyStats`);
+		const dailyStatsData = await dailyStatsResponse.json();
+		const averageMovesSpan = document.querySelector("#average-moves");
+		averageMovesSpan.textContent = dailyStatsData.avgMoves;
 	}
 }
 
@@ -130,7 +139,6 @@ const closeModalBtn = document.querySelector("#closeModalBtn");
 const modalColorButtons = document.querySelectorAll(".color-option");
 const tileButtons = document.querySelectorAll(".main-tile");
 const cornerButtons = document.querySelectorAll(".corner");
-// const generateButton = document.querySelector("#generate");
 const statsButton = document.querySelector("#view-stats");
 const closeStatsModalBtn = document.querySelector("#closeStatsModalBtn");
 const closeSolvedModalBtn = document.querySelector("#closeSolvedModalBtn");
@@ -261,23 +269,6 @@ resetButton.addEventListener("click", () => {
 		movesMadeSpan.textContent = movesMade;
 	}
 });
-
-// generateButton.addEventListener("click", () => {
-// 	console.log("generating new box...");
-// 	const newBoxConfiguration = generateBox();
-// 	currButtonId = -1;
-// 	//re-render box
-// 	cornerButtons.forEach(button => {
-// 		button.className = ["tile", "corner", "grey-realm"].join(" ");
-// 	});
-// 	tileButtons.forEach(button => {
-// 		button.className = ["tile", "main-tile", "grey-tile"].join(" ");
-// 	});
-// 	renderBox(newBoxConfiguration);
-// 	const copiedTiles = Array.from(tileButtons, node => node.cloneNode(true));
-// 	const copiedCorners = Array.from(cornerButtons, node => node.cloneNode(true));
-// 	startingSolve = [copiedTiles, copiedCorners];
-// });
 
 tileButtons.forEach(button => {
 	button.addEventListener("click", () => {
