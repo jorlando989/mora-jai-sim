@@ -37,9 +37,12 @@ body {
 #github-logo {
     position: absolute;
     right: 10px;
-    bottom: 10px;
+    top: 10px;
     width: 50px;
     height: 50px;
+    background-color: var(--grey-color);
+    border-radius: 50%;
+    border: 2px solid var(--grey-color);
 }
 
 .screen-container {
@@ -53,7 +56,7 @@ body {
 
 .box {
     display: flex;
-    background-image: url('images/wood_texture.png');
+    background-image: url('images/morajai1.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -267,9 +270,8 @@ dialog {
     background-color: var(--blue-color);
 }
 
-#next-puzzle-timer {
-    font-weight: 600;
+.timer-text {
     font-size: 16px;
-    /* font-family: 'Courier New', monospace; */
-    /* color: #4ade80; */
+    font-weight: 600;
+    text-align: center;
 }
