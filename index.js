@@ -19,9 +19,11 @@ function checkForMatch(cornerTile, allTiles, startingSolve) {
 	
 	if (cornerColor != closestTileColor) {
 		resetBox(startingSolve);
+		return false;
 	} else {
 		// mark corner solved
 		cornerTile.classList.add(`${cornerColor}-tile`);
+		return true;
 	}
 }
 
@@ -132,6 +134,30 @@ const cornerButtons = document.querySelectorAll(".corner");
 const statsButton = document.querySelector("#view-stats");
 const closeStatsModalBtn = document.querySelector("#closeStatsModalBtn");
 const closeSolvedModalBtn = document.querySelector("#closeSolvedModalBtn");
+const timerDisplay = document.querySelector("#next-puzzle-timer");
+
+// Function to calculate time until midnight EST
+function updateTimer() {
+	const now = new Date();
+	const estTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+	
+	// Calculate next midnight EST
+	const nextMidnight = new Date(estTime);
+	nextMidnight.setHours(24, 0, 0, 0);
+	
+	// Calculate time remaining
+	const timeRemaining = nextMidnight - estTime;
+	const hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24);
+	const minutes = Math.floor((timeRemaining / (1000 * 60)) % 60);
+	const seconds = Math.floor((timeRemaining / 1000) % 60);
+	
+	// Format as HH:MM:SS
+	timerDisplay.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+// Update timer immediately and then every second
+updateTimer();
+setInterval(updateTimer, 1000);
 
 closeStatsModalBtn.addEventListener("click", () => {
 	const statsModal = document.querySelector("#stats-modal");
@@ -142,6 +168,8 @@ closeSolvedModalBtn.addEventListener("click", () => {
 	const solvedModal = document.querySelector("#solved-modal");
 	solvedModal.close();
 });
+
+
 
 statsButton.addEventListener("click", async () => {
 	const response = await fetch(`${API_ENDPOINT}/getStatsHistory`)
@@ -271,7 +299,8 @@ cornerButtons.forEach(button => {
 			currButtonId = button.id;
 			tileSelectModal.showModal();
 		} else {
-			checkForMatch(button, tileButtons, startingSolve);
+			const isMatch = checkForMatch(button, tileButtons, startingSolve);
+			if (!isMatch) movesMade = 0;
 			checkIfBoxSolved(cornerButtons, movesMade);
 		}
 	});
