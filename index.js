@@ -1,6 +1,14 @@
 import * as tileActions from "./tileActions.js";
 import { API_ENDPOINT } from "./config.js";
 
+const backgrounds = [
+	"images/backgrounds/unknown_entrance.jpg",
+	"images/backgrounds/unknown_inner_angle.jpg",
+	"images/backgrounds/unknown_room_1.jpg",
+	"images/backgrounds/unknown_statue.jpg"
+];
+document.body.style.backgroundImage = `url("${backgrounds[Math.floor(Math.random() * backgrounds.length)]}")`;
+
 const colors = ["red", "green", "blue", "white", "black", "orange", "yellow", "pink", "purple", "grey"];
 
 function hashToColors(hash) {

@@ -17,7 +17,10 @@
 }
 
 body {
-    background-color: var(--main-color);
+    background-image: url('images/backgrounds/unknown_entrance.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     color: white;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
